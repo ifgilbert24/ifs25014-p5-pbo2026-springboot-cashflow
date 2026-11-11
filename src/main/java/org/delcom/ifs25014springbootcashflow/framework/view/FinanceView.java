@@ -440,13 +440,11 @@ public class FinanceView extends VerticalLayout {
             try {
                 useCase.removeTransactionForUser(currentUserId(), transaction.getId());
                 showSuccess("Transaksi berhasil dihapus.");
-                dialog.close();
                 refreshAll();
             } catch (EntityNotFoundException | ValidationException ex) {
-                progress.setVisible(false);
-                cancelBtn.setEnabled(true);
-                confirmBtn.setEnabled(true);
                 showError(ex.getMessage());
+            } finally {
+                dialog.close();
             }
         });
 

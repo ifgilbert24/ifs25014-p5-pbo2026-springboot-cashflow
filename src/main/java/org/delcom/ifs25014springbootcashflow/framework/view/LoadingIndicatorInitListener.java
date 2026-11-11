@@ -33,7 +33,6 @@ public class LoadingIndicatorInitListener implements VaadinServiceInitListener {
 
     private void configureIndexHtml(IndexHtmlResponse response) {
         Document document = response.getDocument();
-        document.documentSettings().prettyPrint(false);
         Element html = document.selectFirst("html");
         if (html != null && html.attr("lang").isBlank()) {
             html.attr("lang", "id");

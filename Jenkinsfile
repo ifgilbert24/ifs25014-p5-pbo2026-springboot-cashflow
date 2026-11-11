@@ -477,7 +477,6 @@ pipeline {
                 artifacts: 'trivy-results.sarif',
                 allowEmptyArchive: true
             )
-            
         }
 
         success {

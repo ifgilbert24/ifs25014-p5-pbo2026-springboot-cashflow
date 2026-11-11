@@ -204,9 +204,16 @@ pipeline {
                     cp "$JAR" app.jar
 
                     # ZIP bersih seperti hasil clone GitHub (hanya file tracked),
-                    # lalu tambahkan JAR hasil build di target/ agar deploy zip
-                    # berperilaku sama dengan deploy git.
+                    # lalu sertakan hasil build Vaadin production bundle (META-INF/VAADIN)
+                    # ke src/main/resources dan target/classes agar saat server deploy
+                    # melakukan kompilasi ulang Maven tanpa -Pproduction, bundle production
+                    # tetap ikut terpaket ke dalam JAR.
                     git -c safe.directory="$PWD" archive --format=zip --output=latest-app.zip HEAD
+                    if [ -d target/classes/META-INF/VAADIN ]; then
+                        mkdir -p src/main/resources/META-INF
+                        cp -r target/classes/META-INF/VAADIN src/main/resources/META-INF/
+                        zip -qr latest-app.zip src/main/resources/META-INF/VAADIN target/classes/META-INF/VAADIN
+                    fi
                     zip -q latest-app.zip "$JAR"
 
                     echo "=== Application Package Created ==="

@@ -60,12 +60,12 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         TextField usernameField = new TextField("Username");
         usernameField.setWidthFull();
         usernameField.setId("login-username-field");
-        setInnerInputId(usernameField, "login-username");
+        setInnerInputId(usernameField, "login-username", "Username");
 
         PasswordField passwordField = new PasswordField("Kata Sandi");
         passwordField.setWidthFull();
         passwordField.setId("login-password-field");
-        setInnerInputId(passwordField, "login-password");
+        setInnerInputId(passwordField, "login-password", "Kata Sandi");
 
         Button loginButton = new Button("Masuk");
         loginButton.setId("login-submit");
@@ -111,11 +111,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         }
     }
 
-    private static void setInnerInputId(com.vaadin.flow.component.Component field, String id) {
+    private static void setInnerInputId(com.vaadin.flow.component.Component field, String id, String label) {
         field.addAttachListener(e -> field.getElement().executeJs(
                 "const input = this.inputElement || this.querySelector('input');"
-                        + "if (input) { input.id = $0; input.name = $0; }",
-                id
+                        + "if (input) { input.id = $0; input.name = $0; input.setAttribute('aria-label', $1); }",
+                id, label
         ));
     }
 }

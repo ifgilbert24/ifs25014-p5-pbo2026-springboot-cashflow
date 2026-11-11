@@ -40,6 +40,8 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver, AfterN
     public MainLayout(IUserRepository userRepository) {
         this.userRepository = userRepository;
         setPrimarySection(Section.DRAWER);
+        getElement().setAttribute("role", "region");
+        getElement().setAttribute("aria-label", "Tata Letak Aplikasi Cashflow");
         getStyle().set("background", "#F1F5F9");
 
         DrawerToggle toggle = new DrawerToggle();
@@ -203,6 +205,7 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver, AfterN
                 .set("border-radius", "999px");
 
         MenuBar menuBar = new MenuBar();
+        menuBar.getElement().setAttribute("aria-label", "Menu Akun Pengguna");
         menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
 
         MenuItem rootItem = menuBar.addItem(trigger);

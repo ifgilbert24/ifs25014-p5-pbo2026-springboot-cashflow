@@ -43,6 +43,7 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver, AfterN
         getStyle().set("background", "#F1F5F9");
 
         DrawerToggle toggle = new DrawerToggle();
+        toggle.getElement().setAttribute("aria-label", "Buka atau tutup menu navigasi");
         toggle.getStyle().set("color", "#FFFFFF");
 
         H1 brand = new H1("Cashflow");
@@ -56,6 +57,7 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver, AfterN
         headerRight.setSpacing(false);
 
         HorizontalLayout navbar = new HorizontalLayout(toggle, brand, headerRight);
+        navbar.getElement().setAttribute("role", "banner");
         navbar.setWidthFull();
         navbar.setAlignItems(FlexComponent.Alignment.CENTER);
         navbar.expand(brand);
@@ -66,6 +68,8 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver, AfterN
 
         addToNavbar(navbar);
 
+        drawerMenu.getElement().setAttribute("role", "navigation");
+        drawerMenu.getElement().setAttribute("aria-label", "Menu Utama");
         drawerMenu.setPadding(false);
         drawerMenu.setSpacing(false);
         drawerMenu.setSizeFull();

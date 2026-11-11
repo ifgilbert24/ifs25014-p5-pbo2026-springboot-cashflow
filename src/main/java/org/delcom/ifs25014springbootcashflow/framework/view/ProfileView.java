@@ -31,6 +31,8 @@ import java.io.ByteArrayInputStream;
 public class ProfileView extends VerticalLayout {
 
     public ProfileView(UserUseCase userUseCase, FileStorage fileStorage) {
+        getElement().setAttribute("role", "main");
+        getElement().setAttribute("aria-label", "Profil Pengguna");
         setWidthFull();
         setPadding(true);
         setSpacing(false);

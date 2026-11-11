@@ -29,6 +29,8 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
 
     public UsersView(UserUseCase userUseCase, IUserRepository userRepository) {
         this.userRepository = userRepository;
+        getElement().setAttribute("role", "main");
+        getElement().setAttribute("aria-label", "Daftar Pengguna");
         setWidthFull();
         setPadding(true);
         setSpacing(false);

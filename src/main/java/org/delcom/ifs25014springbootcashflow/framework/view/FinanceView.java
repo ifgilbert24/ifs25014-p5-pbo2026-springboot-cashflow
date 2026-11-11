@@ -59,6 +59,8 @@ public class FinanceView extends VerticalLayout {
         this.presenter = presenter;
         this.fileStorage = fileStorage;
 
+        getElement().setAttribute("role", "main");
+        getElement().setAttribute("aria-label", "Catatan Keuangan Saya");
         setWidthFull();
         setPadding(true);
         setSpacing(false);
@@ -123,6 +125,7 @@ public class FinanceView extends VerticalLayout {
 
     private HorizontalLayout buildToolbar() {
         searchField.setPlaceholder("Cari keterangan...");
+        searchField.setAriaLabel("Cari keterangan transaksi");
         searchField.setClearButtonVisible(true);
         searchField.setWidth("280px");
 

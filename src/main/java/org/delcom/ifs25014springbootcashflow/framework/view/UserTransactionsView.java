@@ -51,6 +51,8 @@ public class UserTransactionsView extends VerticalLayout implements HasUrlParame
         this.userRepository = userRepository;
         this.presenter = presenter;
 
+        getElement().setAttribute("role", "main");
+        getElement().setAttribute("aria-label", "Transaksi Pengguna");
         setWidthFull();
         setPadding(true);
         setSpacing(false);

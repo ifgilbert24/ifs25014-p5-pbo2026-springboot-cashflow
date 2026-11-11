@@ -4,7 +4,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -31,6 +31,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     public LoginView(AuthUseCase authUseCase, IUserRepository userRepository) {
         this.userRepository = userRepository;
+        getElement().setAttribute("role", "main");
+        getElement().setAttribute("aria-label", "Halaman Masuk");
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -38,6 +40,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         VerticalLayout card = new VerticalLayout();
         card.setWidth("400px");
+        card.setMaxWidth("92vw");
         card.setPadding(true);
         card.setSpacing(false);
         card.getStyle()
@@ -48,7 +51,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
                 .set("padding", "2rem")
                 .set("gap", "0.75rem");
 
-        H2 title = new H2("Masuk Aplikasi Cashflow");
+        H1 title = new H1("Masuk Aplikasi Cashflow");
         title.getStyle()
                 .set("color", "#1E3A8A")
                 .set("margin", "0 0 0.25rem 0")

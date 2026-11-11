@@ -3,7 +3,7 @@ package org.delcom.ifs25014springbootcashflow.framework.view;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -30,6 +30,8 @@ public class RegisterView extends VerticalLayout implements BeforeEnterObserver 
 
     public RegisterView(AuthUseCase authUseCase, IUserRepository userRepository) {
         this.userRepository = userRepository;
+        getElement().setAttribute("role", "main");
+        getElement().setAttribute("aria-label", "Halaman Pendaftaran");
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -37,6 +39,7 @@ public class RegisterView extends VerticalLayout implements BeforeEnterObserver 
 
         VerticalLayout card = new VerticalLayout();
         card.setWidth("420px");
+        card.setMaxWidth("92vw");
         card.setPadding(true);
         card.setSpacing(false);
         card.getStyle()
@@ -47,7 +50,7 @@ public class RegisterView extends VerticalLayout implements BeforeEnterObserver 
                 .set("padding", "2rem")
                 .set("gap", "0.75rem");
 
-        H2 title = new H2("Daftar Akun Baru");
+        H1 title = new H1("Daftar Akun Baru");
         title.getStyle()
                 .set("color", "#1E3A8A")
                 .set("margin", "0 0 0.25rem 0")

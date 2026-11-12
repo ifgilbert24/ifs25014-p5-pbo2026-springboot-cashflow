@@ -14,6 +14,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.delcom.ifs25014springbootcashflow.adapter.presenter.FinancePresenter;
@@ -114,7 +115,10 @@ public class UserTransactionsView extends VerticalLayout implements HasUrlParame
     }
 
     @Override
-    public void setParameter(BeforeEvent event, Integer userId) {
+    public void setParameter(BeforeEvent event, @OptionalParameter Integer userId) {
+        if (userId == null) {
+            userId = AuthSession.getUser().map(User::getId).orElse(1);
+        }
         try {
             User target = userUseCase.getUser(userId);
             header.setText("Transaksi Milik: " + target.getFullName() + " (@" + target.getUsername() + ")");

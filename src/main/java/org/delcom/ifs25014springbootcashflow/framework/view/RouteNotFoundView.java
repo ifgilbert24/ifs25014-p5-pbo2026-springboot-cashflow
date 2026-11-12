@@ -9,9 +9,12 @@ import com.vaadin.flow.router.ErrorParameter;
 import com.vaadin.flow.router.HasErrorParameter;
 import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.servlet.http.HttpServletResponse;
 
+@Route("not-found")
 @PageTitle("Halaman Tidak Ditemukan | Cashflow")
 public class RouteNotFoundView extends VerticalLayout implements HasErrorParameter<NotFoundException> {
 

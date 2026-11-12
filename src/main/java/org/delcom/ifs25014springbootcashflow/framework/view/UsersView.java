@@ -6,7 +6,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -37,7 +37,7 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
 
         Div card = PageCard.create();
 
-        H2 title = new H2("Daftar Pengguna");
+        H1 title = new H1("Daftar Pengguna");
         title.getStyle()
                 .set("color", "#1E3A8A")
                 .set("margin", "0")

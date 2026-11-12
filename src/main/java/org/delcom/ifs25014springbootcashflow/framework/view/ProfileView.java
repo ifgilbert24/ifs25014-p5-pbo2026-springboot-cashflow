@@ -3,7 +3,7 @@ package org.delcom.ifs25014springbootcashflow.framework.view;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
@@ -40,7 +40,7 @@ public class ProfileView extends VerticalLayout {
         Div card = PageCard.create();
         card.setMaxWidth("640px");
 
-        H2 title = new H2("Profil Pengguna");
+        H1 title = new H1("Profil Pengguna");
         title.getStyle()
                 .set("color", "#1E3A8A")
                 .set("margin", "0")

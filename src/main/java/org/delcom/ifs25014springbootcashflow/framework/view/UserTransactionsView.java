@@ -5,7 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
@@ -36,7 +36,7 @@ public class UserTransactionsView extends VerticalLayout implements HasUrlParame
     private final UserUseCase userUseCase;
     private final IUserRepository userRepository;
     private final FinancePresenter presenter;
-    private final H2 header = new H2();
+    private final H1 header = new H1();
     private final Paragraph statusMessage = new Paragraph();
     private final Grid<Transaction> grid = new Grid<>(Transaction.class, false);
 

@@ -8,7 +8,6 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -46,7 +45,7 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver, AfterN
         toggle.getElement().setAttribute("aria-label", "Buka atau tutup menu navigasi");
         toggle.getStyle().set("color", "#FFFFFF");
 
-        H1 brand = new H1("Cashflow");
+        Span brand = new Span("Cashflow");
         brand.getStyle()
                 .set("font-size", "1.15rem")
                 .set("font-weight", "700")

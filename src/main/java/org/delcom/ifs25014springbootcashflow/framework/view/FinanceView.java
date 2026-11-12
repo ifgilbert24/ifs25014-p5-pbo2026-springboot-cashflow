@@ -7,7 +7,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
@@ -67,7 +67,7 @@ public class FinanceView extends VerticalLayout {
 
         Div card = PageCard.create();
 
-        H2 header = new H2("Catatan Keuangan Saya");
+        H1 header = new H1("Catatan Keuangan Saya");
         header.getStyle()
                 .set("color", "#1E3A8A")
                 .set("margin", "0")

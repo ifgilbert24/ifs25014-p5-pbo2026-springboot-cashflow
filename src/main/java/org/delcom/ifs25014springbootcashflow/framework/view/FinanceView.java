@@ -178,6 +178,10 @@ public class FinanceView extends VerticalLayout {
             Image img = new Image(imageUrl, transaction.getDescription());
             img.setWidth("48px");
             img.setHeight("36px");
+            img.getElement().setAttribute("width", "48");
+            img.getElement().setAttribute("height", "36");
+            img.getElement().setAttribute("loading", "lazy");
+            img.getElement().setAttribute("decoding", "async");
             img.setTitle("Klik untuk memperbesar");
             img.getStyle()
                     .set("object-fit", "cover")
@@ -477,10 +481,11 @@ public class FinanceView extends VerticalLayout {
 
     private Upload createProofUpload(AtomicReference<String> target) {
         Upload upload = new Upload(UploadHandler.inMemory((metadata, bytes) -> {
+            byte[] optimized = ImageOptimizer.optimizeProof(bytes);
             String path = fileStorage.store(
                     "proofs",
-                    metadata.fileName(),
-                    new ByteArrayInputStream(bytes)
+                    "proof.jpg",
+                    new ByteArrayInputStream(optimized)
             );
             target.set(path);
         }));

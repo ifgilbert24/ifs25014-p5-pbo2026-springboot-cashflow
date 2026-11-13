@@ -56,6 +56,10 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
             Image img = new Image(imageUrl, user.getFullName());
             img.setWidth("36px");
             img.setHeight("36px");
+            img.getElement().setAttribute("width", "36");
+            img.getElement().setAttribute("height", "36");
+            img.getElement().setAttribute("loading", "lazy");
+            img.getElement().setAttribute("decoding", "async");
             img.setTitle("Klik untuk memperbesar");
             img.getStyle()
                     .set("border-radius", "50%")

@@ -60,6 +60,7 @@ class AppConfigTest {
         config.uploadResourceConfigurer(fileStorage).addResourceHandlers(registry);
         verify(registry).addResourceHandler("/uploads/**");
         verify(registration).addResourceLocations(anyString());
+        verify(registration).setCachePeriod(31536000);
     }
 
     private DataSource createDataSource() {

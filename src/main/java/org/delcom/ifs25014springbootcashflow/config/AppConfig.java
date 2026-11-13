@@ -74,7 +74,8 @@ public class AppConfig {
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
                 String location = fileStorage.getBaseDir().toUri().toString();
                 registry.addResourceHandler("/uploads/**")
-                        .addResourceLocations(location);
+                        .addResourceLocations(location)
+                        .setCachePeriod(31536000);
             }
         };
     }

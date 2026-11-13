@@ -45,5 +45,13 @@ app:
 
 vaadin:
   launch-browser: false
+  eager-server-load: true
+  react:
+    enable: false
   liveReload:
-    enabled: true
+    enabled: false
+  devmode:
+    devTools:
+      enabled: false
+    liveReload:
+      enabled: false

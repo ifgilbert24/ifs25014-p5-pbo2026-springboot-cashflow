@@ -54,8 +54,11 @@ public class ProfileView extends VerticalLayout {
         }
 
         Image photo = new Image();
-        photo.setWidth("96px");
-        photo.setHeight("96px");
+        photo.setWidth("72px");
+        photo.setHeight("72px");
+        photo.getElement().setAttribute("width", "72");
+        photo.getElement().setAttribute("height", "72");
+        photo.getElement().setAttribute("decoding", "async");
         photo.getStyle()
                 .set("border-radius", "50%")
                 .set("object-fit", "cover")
@@ -70,10 +73,11 @@ public class ProfileView extends VerticalLayout {
         });
 
         Upload upload = new Upload(UploadHandler.inMemory((metadata, bytes) -> {
+            byte[] optimized = ImageOptimizer.optimizeAvatar(bytes);
             String storedPath = fileStorage.store(
                     "profiles",
-                    metadata.fileName(),
-                    new ByteArrayInputStream(bytes)
+                    "avatar.jpg",
+                    new ByteArrayInputStream(optimized)
             );
             try {
                 User updated = userUseCase.updatePhoto(current.getId(), storedPath);
@@ -145,7 +149,7 @@ public class ProfileView extends VerticalLayout {
             photo.setTitle("Klik untuk memperbesar");
             photo.getStyle().set("cursor", "pointer");
         } else {
-            photo.setSrc("https://api.dicebear.com/9.x/initials/svg?seed=User");
+            photo.setSrc("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'><rect width='72' height='72' rx='36' fill='%23DBEAFE'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%231E40AF' font-family='sans-serif' font-size='28' font-weight='700'>U</text></svg>");
             photo.setAlt("Belum ada foto");
             photo.setTitle("");
             photo.getStyle().set("cursor", "default");

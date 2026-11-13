@@ -60,8 +60,16 @@ vaadin-checkbox[disabled]::part(checkbox),
   z-index: 999999 !important;
   pointer-events: none !important;
   opacity: 1 !important;
+  transition: opacity 0.15s ease !important;
+  will-change: opacity !important;
   box-shadow: 0 0 10px rgba(37, 99, 235, 0.75) !important;
   animation: v-loading-pulse 1.2s infinite ease-in-out !important;
+}
+
+copilot-main,
+vaadin-dev-tools,
+copilot-toolbar {
+  display: none !important;
 }
 
 .v-loading-indicator.second {
@@ -184,4 +192,10 @@ vaadin-context-menu-item > * {
   margin: 0 !important;
   justify-content: flex-start !important;
   width: auto !important;
+}
+
+vaadin-avatar::part(image) {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }

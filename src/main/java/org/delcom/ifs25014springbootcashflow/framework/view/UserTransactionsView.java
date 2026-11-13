@@ -85,6 +85,10 @@ public class UserTransactionsView extends VerticalLayout implements HasUrlParame
             Image img = new Image(imageUrl, transaction.getDescription());
             img.setWidth("48px");
             img.setHeight("36px");
+            img.getElement().setAttribute("width", "48");
+            img.getElement().setAttribute("height", "36");
+            img.getElement().setAttribute("loading", "lazy");
+            img.getElement().setAttribute("decoding", "async");
             img.setTitle("Klik untuk memperbesar");
             img.getStyle()
                     .set("object-fit", "cover")

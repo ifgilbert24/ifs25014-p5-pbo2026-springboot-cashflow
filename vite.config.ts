@@ -18,21 +18,15 @@ const USED_VAADIN_ICONS = new Set([
   'warning',
 ]);
 
-const AUTH_ICON_PREFIXES = [
+const AUTH_SHELL_PREFIXES = [
+  '@vaadin/app-layout/',
   '@vaadin/icons/',
   '@vaadin/icon/',
-  '@vaadin/avatar/',
-];
-
-const AUTH_LAYOUT_PREFIXES = [
-  '@vaadin/app-layout/',
-];
-
-const AUTH_MENU_PREFIXES = [
   '@vaadin/menu-bar/',
   '@vaadin/context-menu/',
   'Frontend/generated/jar-resources/vaadin-menu-bar/',
   'Frontend/generated/jar-resources/vaadin-context-menu/',
+  '@vaadin/avatar/',
 ];
 
 const AUTH_GRID_PREFIXES = [
@@ -52,12 +46,10 @@ const AUTH_OVERLAY_PREFIXES = [
   '@vaadin/tooltip/',
 ];
 
-type FlowBucket = 'icon' | 'layout' | 'menu' | 'grid' | 'overlay' | 'core';
+type FlowBucket = 'shell' | 'grid' | 'overlay' | 'core';
 
 function classifyFlowImport(specifier: string): FlowBucket {
-  if (AUTH_ICON_PREFIXES.some((p) => specifier.startsWith(p))) return 'icon';
-  if (AUTH_LAYOUT_PREFIXES.some((p) => specifier.startsWith(p))) return 'layout';
-  if (AUTH_MENU_PREFIXES.some((p) => specifier.startsWith(p))) return 'menu';
+  if (AUTH_SHELL_PREFIXES.some((p) => specifier.startsWith(p))) return 'shell';
   if (AUTH_GRID_PREFIXES.some((p) => specifier.startsWith(p))) return 'grid';
   if (AUTH_OVERLAY_PREFIXES.some((p) => specifier.startsWith(p))) return 'overlay';
   return 'core';
@@ -65,9 +57,7 @@ function classifyFlowImport(specifier: string): FlowBucket {
 
 function optimizeVaadinBundlePlugin(): Plugin {
   const virtualBuckets: Record<string, string[]> = {
-    'virtual:flow-icon-imports': [],
-    'virtual:flow-layout-imports': [],
-    'virtual:flow-menu-imports': [],
+    'virtual:flow-shell-imports': [],
     'virtual:flow-grid-imports': [],
     'virtual:flow-overlay-imports': [],
   };
@@ -100,6 +90,18 @@ function optimizeVaadinBundlePlugin(): Plugin {
         return { code: filtered.join('\n'), map: null };
       }
 
+      if (normalizedId.endsWith('/@vaadin/common-frontend/ConnectionIndicator.js')) {
+        let updated = code.replace(
+          'document.body.appendChild($wnd.Vaadin.connectionIndicator);',
+          '(document.getElementById("app-status-landmark") || document.body).appendChild($wnd.Vaadin.connectionIndicator);'
+        );
+        updated = updated.replace(
+          'display: contents;',
+          'display: block;\n        height: 0;\n        overflow: visible;'
+        );
+        return { code: updated, map: null };
+      }
+
       if (normalizedId.includes('/generated/flow/chunks/chunk-') && normalizedId.endsWith('.js')) {
         return { code: 'export {};', map: null };
       }
@@ -125,34 +127,38 @@ function optimizeVaadinBundlePlugin(): Plugin {
         }
 
         const loaderBlock = `
-const __yieldMain = () => new Promise((r) => setTimeout(r, 0));
 let __authPromise = null;
-const __loadAuthModules = () => {
-  if (!__authPromise) {
-    __authPromise = (async () => {
-      await import('virtual:flow-icon-imports');
-      await __yieldMain();
-      await import('virtual:flow-layout-imports');
-      await __yieldMain();
-      await import('virtual:flow-menu-imports');
-      await __yieldMain();
-      await import('virtual:flow-grid-imports');
-      await __yieldMain();
-      await import('virtual:flow-overlay-imports');
-    })();
+let __overlayPromise = null;
+const __loadOverlay = () => {
+  if (!__overlayPromise) {
+    __overlayPromise = import('virtual:flow-overlay-imports');
   }
-  return __authPromise;
+  return __overlayPromise;
+};
+const __needsOverlayNow = () => /^\\/profile\\/?$/.test(window.location.pathname);
+const __loadAuthModules = (withOverlay = false) => {
+  if (!__authPromise) {
+    const tasks = [
+      import('virtual:flow-shell-imports'),
+      import('virtual:flow-grid-imports'),
+    ];
+    if (withOverlay || __needsOverlayNow()) {
+      tasks.push(__loadOverlay());
+    }
+    __authPromise = Promise.all(tasks);
+  }
+  return withOverlay ? Promise.all([__authPromise, __loadOverlay()]) : __authPromise;
 };
 const __isPublicAuth = () => /^\\/(login|register)\\/?$/.test(window.location.pathname);
 if (!__isPublicAuth()) {
-  await __loadAuthModules();
-} else {
-  const __pre = () => { __loadAuthModules(); };
-  window.addEventListener('pointerdown', __pre, { once: true, passive: true, capture: true });
-  window.addEventListener('keydown', __pre, { once: true, passive: true, capture: true });
-  window.addEventListener('click', __pre, { once: true, passive: true, capture: true });
-  window.addEventListener('popstate', () => { if (!__isPublicAuth()) __loadAuthModules(); });
+  await __loadAuthModules(__needsOverlayNow());
 }
+const __pre = () => { __loadAuthModules(true); };
+window.addEventListener('pointerdown', __pre, { once: true, passive: true, capture: true });
+window.addEventListener('keydown', __pre, { once: true, passive: true, capture: true });
+window.addEventListener('touchstart', __pre, { once: true, passive: true, capture: true });
+window.addEventListener('click', __pre, { once: true, passive: true, capture: true });
+window.addEventListener('popstate', () => { if (!__isPublicAuth()) __loadAuthModules(true); });
 `;
 
         let out = coreLines.join('\n');
@@ -162,11 +168,11 @@ if (!__isPublicAuth()) {
         );
         out = out.replace(
           '  const pending = [];',
-          '  const pending = __isPublicAuth() ? [] : [__loadAuthModules()];'
+          '  const pending = __isPublicAuth() ? [] : [__loadAuthModules(__needsOverlayNow())];'
         );
         out = out.replaceAll(
           'pending.push(import(',
-          'pending.push((__isPublicAuth() ? Promise.resolve() : __loadAuthModules()), import('
+          'pending.push((__isPublicAuth() ? Promise.resolve() : __loadAuthModules(__needsOverlayNow())), import('
         );
         return { code: out, map: null };
       }

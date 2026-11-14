@@ -203,9 +203,17 @@ public class LoadingIndicatorInitListener implements VaadinServiceInitListener, 
 
         Element body = document.body();
         Element outlet = body.selectFirst("#outlet");
-        if (outlet != null && !"main".equalsIgnoreCase(outlet.tagName())) {
-            outlet.attr("role", "main");
-            outlet.attr("aria-label", "Konten Utama Aplikasi Cashflow");
+        if (outlet != null) {
+            outlet.removeAttr("role");
+            outlet.removeAttr("aria-label");
+        }
+        if (body.selectFirst("#app-status-landmark") == null) {
+            Element statusLandmark = new Element("div")
+                    .attr("id", "app-status-landmark")
+                    .attr("role", "region")
+                    .attr("aria-label", "Status koneksi aplikasi")
+                    .attr("style", "position:fixed;inset:0 auto auto 0;width:100%;height:0;z-index:999999;pointer-events:none;");
+            body.prependChild(statusLandmark);
         }
         if (body.selectFirst("#app-fcp-shell") == null) {
             String path = response.getVaadinRequest() != null && response.getVaadinRequest().getPathInfo() != null
@@ -223,55 +231,70 @@ public class LoadingIndicatorInitListener implements VaadinServiceInitListener, 
                 shellTitle = "Cashflow - Catatan Keuangan";
                 shellSub = "Manajemen Catatan Keuangan Pribadi (Pemasukan & Pengeluaran)";
             }
-            Element shell = new Element("div").attr("id", "app-fcp-shell");
+            Element shell = new Element("div")
+                    .attr("id", "app-fcp-shell")
+                    .attr("role", "main")
+                    .attr("aria-label", "Memuat Aplikasi Cashflow");
             Element card = shell.appendElement("div").attr("id", "app-fcp-card");
             card.appendElement("h1").attr("id", "app-fcp-title").text(shellTitle);
             card.appendElement("div").attr("class", "app-fcp-field");
             card.appendElement("div").attr("class", "app-fcp-field");
             card.appendElement("div").attr("class", "app-fcp-btn").text("Memuat...");
             card.appendElement("p").attr("id", "app-fcp-sub").text(shellSub);
-            if (outlet != null) {
-                outlet.prependChild(shell);
-            } else {
-                body.prependChild(shell);
-            }
+            body.prependChild(shell);
         }
         Element a11yScript = new Element("script").attr("type", "text/javascript").appendChild(new DataNode(
                 "(function(){"
-                        + "function ensureA11y(){"
+                        + "function ensureStatusLandmark(){"
+                        + "var region=document.getElementById('app-status-landmark');"
+                        + "if(!region&&document.body){"
+                        + "region=document.createElement('div');"
+                        + "region.id='app-status-landmark';"
+                        + "region.setAttribute('role','region');"
+                        + "region.setAttribute('aria-label','Status koneksi aplikasi');"
+                        + "region.style.cssText='position:fixed;inset:0 auto auto 0;width:100%;height:0;z-index:999999;pointer-events:none;';"
+                        + "document.body.insertBefore(region,document.body.firstChild);"
+                        + "}"
+                        + "return region;"
+                        + "}"
+                        + "function syncLandmarks(){"
                         + "var docEl=document.documentElement;"
                         + "if(docEl&&docEl.getAttribute('lang')!=='id'){docEl.setAttribute('lang','id');}"
                         + "if(!document.title||!document.title.trim()){document.title='Cashflow - Aplikasi Catatan Keuangan';}"
                         + "var outlet=document.getElementById('outlet');"
                         + "var fcpShell=document.getElementById('app-fcp-shell');"
                         + "if(outlet){"
-                        + "var hasInnerMain=outlet.querySelector('main, [role=\"main\"]');"
-                        + "if(hasInnerMain){"
                         + "if(outlet.hasAttribute('role')){outlet.removeAttribute('role');}"
                         + "if(outlet.hasAttribute('aria-label')){outlet.removeAttribute('aria-label');}"
-                        + "}else{"
-                        + "if(outlet.getAttribute('role')!=='main'){outlet.setAttribute('role','main');}"
-                        + "if(outlet.getAttribute('aria-label')!=='Konten Utama Aplikasi Cashflow'){outlet.setAttribute('aria-label','Konten Utama Aplikasi Cashflow');}"
-                        + "}"
-                        + "var allH1s=outlet.getElementsByTagName('h1');"
-                        + "if(fcpShell&&fcpShell.parentNode&&(hasInnerMain||allH1s.length>1)){"
+                        + "var innerMain=outlet.querySelector('main, [role=\"main\"]');"
+                        + "if(fcpShell&&fcpShell.parentNode&&(innerMain||outlet.querySelector('h1'))){"
                         + "fcpShell.parentNode.removeChild(fcpShell);"
+                        + "fcpShell=null;"
                         + "}"
+                        + "if(innerMain&&!fcpShell){"
                         + "var srH1=document.getElementById('app-sr-h1');"
-                        + "if(allH1s.length>1&&srH1){srH1.parentNode.removeChild(srH1);}"
-                        + "else if(allH1s.length===0){"
+                        + "var hasH1=outlet.querySelector('h1');"
+                        + "if(hasH1&&srH1&&hasH1!==srH1){srH1.parentNode.removeChild(srH1);}"
+                        + "else if(!hasH1&&!srH1){"
                         + "var h=document.createElement('h1');"
                         + "h.id='app-sr-h1';"
                         + "h.style.cssText='position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';"
                         + "h.textContent='Aplikasi Catatan Keuangan Cashflow';"
-                        + "if(hasInnerMain){hasInnerMain.insertBefore(h,hasInnerMain.firstChild);}"
-                        + "else{outlet.insertBefore(h,outlet.firstChild);}"
+                        + "innerMain.insertBefore(h,innerMain.firstChild);"
                         + "}"
                         + "}"
-                        + "var indicators=document.querySelectorAll('.v-loading-indicator, vaadin-connection-indicator');"
-                        + "for(var i=0;i<indicators.length;i++){"
-                        + "if(!indicators[i].getAttribute('role')){indicators[i].setAttribute('role','status');indicators[i].setAttribute('aria-label','Memuat halaman');}"
                         + "}"
+                        + "var region=ensureStatusLandmark();"
+                        + "var conn=document.querySelectorAll('vaadin-connection-indicator');"
+                        + "for(var i=0;i<conn.length;i++){"
+                        + "var ci=conn[i];"
+                        + "if(ci.getAttribute('role')==='status'){ci.removeAttribute('role');}"
+                        + "if(region&&ci.parentNode!==region){region.appendChild(ci);}"
+                        + "var bars=ci.getElementsByClassName('v-loading-indicator');"
+                        + "for(var b=0;b<bars.length;b++){bars[b].setAttribute('aria-hidden','true');}"
+                        + "}"
+                        + "}"
+                        + "function patchAvatars(){"
                         + "var avatars=document.getElementsByTagName('vaadin-avatar');"
                         + "for(var k=0;k<avatars.length;k++){"
                         + "var sr=avatars[k].shadowRoot;"
@@ -283,17 +306,20 @@ public class LoadingIndicatorInitListener implements VaadinServiceInitListener, 
                         + "}"
                         + "}"
                         + "}"
-                        + "ensureA11y();"
+                        + "syncLandmarks();"
                         + "var timer=0;"
                         + "var outlet=document.getElementById('outlet');"
-                        + "if(outlet){"
-                        + "var obs=new MutationObserver(function(){"
-                        + "if(!timer){timer=setTimeout(function(){timer=0;ensureA11y();},60);}"
-                        + "});"
-                        + "obs.observe(outlet,{childList:true,subtree:false});"
-                        + "var root=outlet.querySelector('[id^=\"ROOT\"]');"
-                        + "if(root){obs.observe(root,{childList:true,subtree:false});}"
+                        + "var outletObs=null;"
+                        + "function onMutate(){"
+                        + "var shell=document.getElementById('app-fcp-shell');"
+                        + "if(shell){syncLandmarks();if(!document.getElementById('app-fcp-shell')&&outletObs){outletObs.disconnect();}}"
+                        + "if(!timer){timer=setTimeout(function(){timer=0;syncLandmarks();patchAvatars();},60);}"
                         + "}"
+                        + "if(outlet&&document.getElementById('app-fcp-shell')){"
+                        + "outletObs=new MutationObserver(onMutate);"
+                        + "outletObs.observe(outlet,{childList:true,subtree:true});"
+                        + "}"
+                        + "if(document.body){new MutationObserver(onMutate).observe(document.body,{childList:true,subtree:false});}"
                         + "})();"
         ));
         body.appendChild(a11yScript);
